@@ -1,0 +1,53 @@
+#include<Servo.h>
+int servopin=7;
+int photopin=A3;
+int tiltpin=4;    //here I added a tilt switch to use as a button so It works only when I keep the breadboard straight so doesn't interrupt me when using laptop otherwise
+int ledpin=8;
+
+int cond=1;
+int photoval;
+int angle=35;
+
+Servo jumpservo;
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(photopin,INPUT);
+  pinMode(servopin,OUTPUT);
+  pinMode(tiltpin,INPUT);
+  pinMode(ledpin,OUTPUT);
+  jumpservo.attach(servopin);
+//  jumpservo.write(120);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  photoval=analogRead(photopin);
+  Serial.println(photoval);
+  cond=digitalRead(tiltpin);
+  if(cond==1)
+  {
+    digitalWrite(ledpin,HIGH);
+    {
+      if(photoval<=300)
+      {
+        delay(1000);
+        jumpservo.write(angle); 
+        delay(75);
+        jumpservo.write(60);
+        delay(100);
+      }
+      else
+      {
+      jumpservo.write(60);    //else spacebar may get pressed constantly
+      delay(50);
+      }
+    }
+  }
+  else
+  {
+    digitalWrite(ledpin,LOW);
+    jumpservo.write(120);
+  }
+    
+}
