@@ -1,0 +1,206 @@
+#include<DHT.h>
+#define Type DHT11
+int senpin=6;
+int potpin=A3;
+DHT temphum(senpin,Type);
+float humidity,tempC,tempF;
+int setime=500,dt=1000;
+int digitals[4]={12,9,8,6};
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  temphum.begin();
+
+  pinMode(13,OUTPUT);
+  pinMode(2,OUTPUT);
+  pinMode(3,OUTPUT);
+  pinMode(4,OUTPUT);
+  pinMode(5,OUTPUT);
+//  pinMode(6,OUTPUT);
+  pinMode(7,OUTPUT);
+  pinMode(8,OUTPUT);
+  pinMode(9,OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(11,OUTPUT);
+  pinMode(12,OUTPUT);
+  Serial.begin(9600);
+  for(int i=0;i<4;i++)
+    digitalWrite(digitals[i],LOW);
+  
+  delay(setime);
+}
+int firstdigit,secondigit,firstdecimal;
+int whatwhat;
+void loop() {
+  // put your main code here, to run repeatedly:
+  humidity=temphum.readHumidity();
+  tempC=temphum.readTemperature();
+  tempF=temphum.readTemperature(true);
+  whatwhat=analogRead(potpin);
+  if(whatwhat>800)
+  {
+    tempC=tempC*10;
+    firstdecimal=(int)tempC%10;
+    tempC=tempC/10;
+    secondigit=(int)tempC%10;
+    tempC=tempC/10;
+    firstdigit=tempC;
+    konsakonsa(1,firstdigit,false);
+    konsakonsa(2,secondigit,true);
+    konsakonsa(3,firstdecimal,false);
+  }
+   else if(whatwhat<200)
+  {
+    tempF=tempF*10;
+    firstdecimal=(int)tempF%10;
+    tempF=tempF/10;
+    secondigit=(int)tempF%10;
+    tempF=tempF/10;
+    firstdigit=tempF;
+    konsakonsa(1,firstdigit,false);
+    konsakonsa(2,secondigit,true);
+    konsakonsa(3,firstdecimal,false);
+  }
+  else
+  {
+    secondigit=(int)humidity%10;
+    humidity=humidity/10;
+    firstdigit=(int)humidity;
+    konsakonsa(2,firstdigit,false);
+    konsakonsa(3,secondigit,false);
+  }
+    Serial.println(humidity);
+//  Serial.print("Humidity: ");
+//  Serial.println(humidity);
+//  Serial.print("Temperature (in Celsuis): ");
+//  Serial.print(tempC);
+//  Serial.print("°C");
+//  Serial.print(" Temperature (in Farenhiet): ");
+//  Serial.print(tempF);
+//  Serial.println("°F");
+//  delay(dt);
+}
+
+void konsakonsa(int d,int x,bool p)
+{
+  d--;
+  for(int i=0;i<4;i++)
+  {
+    if(digitals[d]==digitals[i])
+      digitalWrite(digitals[d],HIGH);
+    else
+      digitalWrite(digitals[i],LOW);
+  }
+  switch(x)
+  {
+    case 9:
+    {
+//      digitalWrite(13,LOW);
+      digitalWrite(11,LOW);
+      digitalWrite(10,LOW);
+      digitalWrite(7,LOW);
+      digitalWrite(5,LOW); 
+      digitalWrite(4,LOW);
+      digitalWrite(2,LOW);
+      break;
+    }
+    case 8:
+    {
+      digitalWrite(13,LOW);
+      digitalWrite(11,LOW);
+      digitalWrite(10,LOW);
+      digitalWrite(7,LOW);
+      digitalWrite(5,LOW); 
+      digitalWrite(4,LOW);
+      digitalWrite(2,LOW);
+      break;
+  }
+    case 7:
+    {
+//      digitalWrite(13,LOW);
+      digitalWrite(11,LOW);
+//      digitalWrite(10,LOW);
+      digitalWrite(7,LOW);
+//      digitalWrite(5,LOW); 
+      digitalWrite(4,LOW);
+//      digitalWrite(2,LOW);
+      break;
+    }
+    case 6:
+    {
+      digitalWrite(13,LOW);
+      digitalWrite(11,LOW);
+      digitalWrite(10,LOW);
+//      digitalWrite(7,LOW);
+      digitalWrite(5,LOW); 
+      digitalWrite(4,LOW);
+      digitalWrite(2,LOW);
+      break;
+  }
+    case 5:
+    {
+//      digitalWrite(13,LOW);
+      digitalWrite(11,LOW);
+      digitalWrite(10,LOW);
+//      digitalWrite(7,LOW);
+      digitalWrite(5,LOW); 
+      digitalWrite(4,LOW);
+      digitalWrite(2,LOW);
+      break;
+  }
+    case 4:
+    {
+//      digitalWrite(13,LOW);
+//      digitalWrite(11,LOW);
+      digitalWrite(10,LOW);
+      digitalWrite(7,LOW);
+      digitalWrite(5,LOW); 
+      digitalWrite(4,LOW);
+//      digitalWrite(2,LOW);
+      break;
+    }
+    case 3:
+    {
+//      digitalWrite(13,LOW);
+      digitalWrite(11,LOW);
+//      digitalWrite(10,LOW);
+      digitalWrite(7,LOW);
+      digitalWrite(5,LOW); 
+      digitalWrite(4,LOW);
+      digitalWrite(2,LOW);
+      break;
+    }
+    case 2:
+    {
+      digitalWrite(13,LOW);
+      digitalWrite(2,LOW);
+      digitalWrite(5,LOW);
+      digitalWrite(7,LOW);
+      digitalWrite(11,LOW);
+      break;
+    }
+    case 1:
+    {
+      digitalWrite(4,LOW);
+      digitalWrite(7,LOW);
+      break;
+    }
+    case 0:
+    {
+      digitalWrite(13,LOW);
+      digitalWrite(2,LOW);
+      digitalWrite(4,LOW);
+      digitalWrite(7,LOW);
+      digitalWrite(10,LOW); 
+      digitalWrite(11,LOW);
+      break;
+    }
+  }
+  if(p) 
+    digitalWrite(3,LOW);
+  delay(5);    // on kitne time k liye hoyega
+  for(int i=2;i<=13;i++)
+    digitalWrite(i,HIGH);
+  for(int i=0;i<4;i++)
+    digitalWrite(digitals[i],LOW);
+}
